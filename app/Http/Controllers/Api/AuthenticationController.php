@@ -46,25 +46,7 @@ class AuthenticationController extends Controller
     {
         try {
 
-         /*   $user = new User();
-            $user->firstName = $request->input('firstName');
-            $user->lastName = $request->input('lastName');
-            $user->email = $request->input('email');
-            $user->phone = $request->input('phone');
-            //$bcr_password = $request->input('password');
-            $user->password = bcrypt($request->input('password'));
-            $user->birthDate = $request->input('birthDate');
-            $user->address = $request->input('address');
-            $user->save();
-
-            return response()->json([
-                'status'=> 200,
-                'message' => 'Register Successfully  added',
-                'data' => $user
-            ]); 
-
-            */
-
+        
             $validator = Validator::make($request->all(), [
                 'firstName' => 'required|string',
                 'lastName' => 'required|string',
@@ -80,7 +62,8 @@ class AuthenticationController extends Controller
     
             $user = User::create(array_merge(
                         $validator->validated(),
-                        ['password' => bcrypt($request->input('password'))]
+                        ['password' => bcrypt($request->input('password'))],
+                       // ['role' => 'Admin']
                     ));
     
             return response()->json([
@@ -129,15 +112,18 @@ class AuthenticationController extends Controller
        
 
         //$seacrh = $request->input('search');
+        if(!auth()->user()->role == 'Admin')
+        {
+            return response()->json([
+                'status'=> 200,
+                'message' => 'You are not an admin role',
+                
+            ]); 
+        }
+
         $search = $request->input('search');
 
-      //  $users = DB::select(`select * from users where email LIKE=%{$search}%`);
-
-       /* $data = User::query()
-                    //->whereLike('name', $seacrh)
-                    ->whereLike('email', $seacrh)
-                    ->get();  */
-
+     
         $data = User::query()
                     ->orWhere('email', 'LIKE', "%{$search}%") 
                     ->orWhere('phone', 'LIKE', "%{$search}%") 
@@ -168,14 +154,27 @@ class AuthenticationController extends Controller
 }
 
 
+
+
+
+
 /*
+            $user = new User();
+            $user->firstName = $request->input('firstName');
+            $user->lastName = $request->input('lastName');
+            $user->email = $request->input('email');
+            $user->phone = $request->input('phone');
+            //$bcr_password = $request->input('password');
+            $user->password = bcrypt($request->input('password'));
+            $user->birthDate = $request->input('birthDate');
+            $user->address = $request->input('address');
+            $user->save();
 
+            return response()->json([
+                'status'=> 200,
+                'message' => 'Register Successfully  added',
+                'data' => $user
+            ]); 
 
-            $fisrtName = $request->input('firstName');
-            $lastName = $request->input('lastName');
-            $email = $request->input('email');
-            $phone = $request->input('phone');
-            $password = $request->input('password');
-            $birthDate = $request->input('birthDate');
-            $address = $request->input('address');
+        
 */

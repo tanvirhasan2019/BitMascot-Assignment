@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('address', 50)->nullable();
             $table->string('birthDate', 50)->nullable();
             $table->string('password');
+            $table->string('role', 20)->nullable();
             $table->timestamps();
         });
     }
